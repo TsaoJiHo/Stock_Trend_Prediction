@@ -1,5 +1,6 @@
 import pandas as pd
 import math
+import json
 import numpy as np
 from tqdm import tqdm
 
@@ -26,66 +27,76 @@ def triple_barrier(price, ub, lb, max_period):
     return ret
 
 def data_generator(codes):
-    training_data = []
-    testing_data = []
 
-    date_serie = pd.read_csv('./indicator_data/close.csv')['date']
+    date_serie = pd.read_csv('./data/indicator_data/close.csv')['date']
 
-    close_df = pd.read_csv('./indicator_data/close.csv')
-    k_df = pd.read_csv('./indicator_data/k.csv')
-    d_df = pd.read_csv('./indicator_data/d.csv')
-    rsi_7_df = pd.read_csv('./indicator_data/rsi_7.csv')
-    rsi_14_df = pd.read_csv('./indicator_data/rsi_14.csv')
-    dif_df = pd.read_csv('./indicator_data/dif.csv')
-    macd_df = pd.read_csv('./indicator_data/macd.csv')
-    willr_df = pd.read_csv('./indicator_data/willr.csv')
+    close_df = pd.read_csv('./data/indicator_data/close.csv')
+    roc_10_df = pd.read_csv('./data/indicator_data/roc_10.csv')
+    roc_30_df = pd.read_csv('./data/indicator_data/roc_30.csv')
+    cci_14_df = pd.read_csv('./data/indicator_data/cci_14.csv')
+    cci_42_df = pd.read_csv('./data/indicator_data/cci_42.csv')
+    adx_14_df = pd.read_csv('./data/indicator_data/adx_14.csv')
+    adx_42_df = pd.read_csv('./data/indicator_data/adx_42.csv')
+    atr_14_df = pd.read_csv('./data/indicator_data/atr_14.csv')
+    atr_42_df = pd.read_csv('./data/indicator_data/atr_42.csv')
+    ema_20_df = pd.read_csv('./data/indicator_data/ema_20.csv')
+    ema_60_df = pd.read_csv('./data/indicator_data/ema_60.csv')
+    sma_20_df = pd.read_csv('./data/indicator_data/sma_20.csv')
+    sma_60_df = pd.read_csv('./data/indicator_data/sma_60.csv')
+    willr_14_df = pd.read_csv('./data/indicator_data/willr_14.csv')
+    willr_42_df = pd.read_csv('./data/indicator_data/willr_42.csv')
+    dif_df = pd.read_csv('./data/indicator_data/dif.csv')
+    macd_df = pd.read_csv('./data/indicator_data/macd.csv')
+    k_9_df = pd.read_csv('./data/indicator_data/k_9.csv')
+    d_9_df = pd.read_csv('./data/indicator_data/d_9.csv')
+    k_27_df = pd.read_csv('./data/indicator_data/k_27.csv')
+    d_27_df = pd.read_csv('./data/indicator_data/d_27.csv')
+    rsi_14_df = pd.read_csv('./data/indicator_data/rsi_14.csv')
+    rsi_42_df = pd.read_csv('./data/indicator_data/rsi_42.csv')
 
-    for code in tqdm(codes):
-     
-        close_serie = close_df[code].rename('close')
 
-        k_serie = k_df[code].rename('k')
-        d_serie = d_df[code].rename('d')
-        rsi_7_serie = rsi_7_df[code].rename('rsi_7')
-        rsi_14_serie = rsi_14_df[code].rename('rsi_14')
-        macd_serie = macd_df[code].rename('macd')
-        dif_serie = dif_df[code].rename('dif')
-        willr_serie = willr_df[code].rename('willr')
+    with open('trend_params.json') as jsonfile:
+        code_para_map = json.load(jsonfile)
 
-        delta_k_serie = (k_serie - k_serie.shift(1)).rename('delta_k')
-        delta_d_serie = (d_serie - d_serie.shift(1)).rename('delta_d')
-        delta_rsi_serie = (rsi_7_serie - rsi_7_serie.shift(1)).rename('delta_rsi_7')
-        delta_macd_serie = (macd_serie - macd_serie.shift(1)).rename('delta_macd')
-        delta_dif_serie = (dif_serie - dif_serie.shift(1)).rename('delta_dif')
-        delta_willr_serie = (willr_serie - willr_serie.shift(1)).rename('delta_willr')
-
-        # change = (close_serie - close_serie.shift(1)).shift(-1).rename('label')
-        # label_serie = (change > 0).astype('int')[:-1]
-        label_serie_30 = triple_barrier(close_serie, 1.1, 0.9, 31)['triple_barrier_signal'].rename('30d')
-        label_serie_15 = triple_barrier(close_serie, 1.07, 0.93, 16)['triple_barrier_signal'].rename('15d')
-        label_serie_7 = triple_barrier(close_serie, 1.04, 0.96, 8)['triple_barrier_signal'].rename('7d')
-        label_serie_3 = triple_barrier(close_serie, 1.02, 0.98, 4)['triple_barrier_signal'].rename('3d')
-        label_serie_1 = triple_barrier(close_serie, 1.01, 0.99, 2)['triple_barrier_signal'].rename('1d')
-        df = pd.concat([date_serie, close_serie, k_serie, d_serie, rsi_7_serie,  rsi_14_serie,
-                        dif_serie, macd_serie, willr_serie,
-                        label_serie_1, label_serie_3, label_serie_7, label_serie_15, label_serie_30], axis=1)
-        # df = pd.concat([date_serie, close_serie, k_serie, d_serie, rsi_7_serie,  rsi_14_serie,
-        #                 dif_serie, macd_serie, willr_serie,
-        #                 label_serie_30], axis=1)
-        # df = pd.concat([date_serie, close_serie, k_serie, 
-        #                  d_serie,  rsi_serie, macd_serie, 
-        #                   willr_serie, label_serie], axis=1)
-        df = df.dropna()
-        # indexNames = df[ df['30d'] == -1 ].index
-        # Delete these row indexes from dataFrame
-        # df.drop(indexNames , inplace=True)
+    for i, code in enumerate(tqdm(codes)):
         
-        split_gap = int(len(df) * 0.8)
-        training_data.append(df[:split_gap])
-        testing_data.append(df[split_gap:])
+        close_serie = close_df[code].rename('close')
+        series = [date_serie, close_serie]
+        series.append(roc_10_df[code].rename('roc_10'))
+        series.append(roc_30_df[code].rename('roc_30'))
+        series.append(cci_14_df[code].rename('cci_14'))
+        series.append(cci_42_df[code].rename('cci_42'))
+        series.append(adx_14_df[code].rename('adx_14'))
+        series.append(adx_42_df[code].rename('adx_42'))
+        series.append(atr_14_df[code].rename('atr_14'))
+        series.append(atr_42_df[code].rename('atr_42'))
+        series.append(ema_20_df[code].rename('ema_20'))
+        series.append(ema_60_df[code].rename('ema_60'))
+        series.append(sma_20_df[code].rename('sma_20'))
+        series.append(sma_60_df[code].rename('sma_60'))
+        series.append(willr_14_df[code].rename('willr_14'))
+        series.append(willr_42_df[code].rename('willr_42'))
+        series.append(macd_df[code].rename('macd'))
+        series.append(dif_df[code].rename('dif'))
+        series.append(k_9_df[code].rename('k_9'))
+        series.append(d_9_df[code].rename('d_9'))
+        series.append(k_27_df[code].rename('k_27'))
+        series.append(d_27_df[code].rename('d_27'))
+        series.append(rsi_14_df[code].rename('rsi_14'))
+        series.append(rsi_42_df[code].rename('rsi_42'))
 
-    pd.concat(training_data).to_csv('./training_data_v2.csv')
-    pd.concat(testing_data).to_csv('./testing_data_v2.csv')
+        params = code_para_map[code]
+
+        series.append(triple_barrier(close_serie, params['15d'][0], params['15d'][1], 16)['triple_barrier_signal'].rename('15d'))
+        series.append(triple_barrier(close_serie, params['30d'][0], params['30d'][1], 31)['triple_barrier_signal'].rename('30d'))
+        series.append(triple_barrier(close_serie, params['90d'][0], params['90d'][1], 91)['triple_barrier_signal'].rename('90d'))
+        series.append(triple_barrier(close_serie, params['180d'][0], params['180d'][1], 181)['triple_barrier_signal'].rename('180d'))
+        df = pd.concat(series, axis=1)
+
+        df = df.dropna()  
+
+        df.iloc[[i for i in range(len(df)) if i % 5 != 0]].to_csv(f'./data/training_data/training_data_{i+1}.csv')
+        df.iloc[[i for i in range(len(df)) if i % 5 == 0]].to_csv(f'./data/training_data/testing_data_{i+1}.csv')
 
 if __name__ == '__main__':
     with open('codes.txt', 'r') as f:
