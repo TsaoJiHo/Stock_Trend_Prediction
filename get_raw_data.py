@@ -22,6 +22,8 @@ def triple_barrier(price, ub, lb, max_period):
     signal = pd.Series(1, p.index)
     signal.loc[p > ub] = 2
     signal.loc[p < lb] = 0
+    signal[-(max_period-1):] = np.nan
+
     ret = pd.DataFrame({'triple_barrier_profit':p, 'triple_barrier_sell_time':t, 'triple_barrier_signal':signal})
 
     return ret
@@ -93,10 +95,11 @@ def data_generator(codes):
         series.append(triple_barrier(close_serie, params['180d'][0], params['180d'][1], 181)['triple_barrier_signal'].rename('180d'))
         df = pd.concat(series, axis=1)
 
-        df = df.dropna()  
+        # df = df.dropna()  
 
-        df.iloc[[i for i in range(len(df)) if i % 5 != 0]].to_csv(f'./data/training_data/training_data_{i+1}.csv')
-        df.iloc[[i for i in range(len(df)) if i % 5 == 0]].to_csv(f'./data/training_data/testing_data_{i+1}.csv')
+
+        df.to_csv(f'./data/training_data/raw_data_{i+1}.csv')
+
 
 if __name__ == '__main__':
     with open('codes.txt', 'r') as f:
