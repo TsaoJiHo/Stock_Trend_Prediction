@@ -89,10 +89,10 @@ def data_generator(codes):
 
         params = code_para_map[code]
 
-        series.append(triple_barrier(close_serie, params['15d'][0], params['15d'][1], 16)['triple_barrier_signal'].rename('15d'))
-        series.append(triple_barrier(close_serie, params['30d'][0], params['30d'][1], 31)['triple_barrier_signal'].rename('30d'))
-        series.append(triple_barrier(close_serie, params['90d'][0], params['90d'][1], 91)['triple_barrier_signal'].rename('90d'))
-        series.append(triple_barrier(close_serie, params['180d'][0], params['180d'][1], 181)['triple_barrier_signal'].rename('180d'))
+        series.append(triple_barrier(close_serie, params['10d'][0], params['10d'][1], 11)['triple_barrier_signal'].rename('10d'))
+        series.append(triple_barrier(close_serie, params['20d'][0], params['20d'][1], 21)['triple_barrier_signal'].rename('20d'))
+        series.append(triple_barrier(close_serie, params['60d'][0], params['60d'][1], 61)['triple_barrier_signal'].rename('60d'))
+        series.append(triple_barrier(close_serie, params['120d'][0], params['120d'][1], 121)['triple_barrier_signal'].rename('120d'))
         df = pd.concat(series, axis=1)
 
         # df = df.dropna()  
