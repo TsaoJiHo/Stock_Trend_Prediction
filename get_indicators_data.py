@@ -2,6 +2,7 @@ from finlab import data
 # https://ai.finlab.tw/api_token/
 
 data.get('price:收盤價').to_csv('./data/indicator_data/close.csv')
+data.get('taiex_total_index:收盤指數').to_csv('./data/indicator_data/taiex.csv')
 
 data.indicator('RSI', timeperiod=14).to_csv('./data/indicator_data/rsi_14.csv')
 data.indicator('RSI', timeperiod=42).to_csv('./data/indicator_data/rsi_42.csv')
