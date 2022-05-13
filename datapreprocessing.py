@@ -29,7 +29,7 @@ def preprocess(path, label):
     
     # split test data
     
-    testing_df = df[df['date'] >= '2020-12-31']
+    testing_df = df[df['date'] >= '2021-01-01']
     testing_date = pd.read_csv(f'./testing_date_{label}.csv')['date']
     for j, date in enumerate(testing_date):
         if date not in testing_df['date'].values:
@@ -37,7 +37,7 @@ def preprocess(path, label):
     testing_df.to_csv(pathlib.Path(path.parent/(f'testing_data_{path.stem.split("_")[-1]}_{label}')).with_suffix('.csv'))
 
     # oversampling training data
-    df = df[df['date'] < '2020-12-31']
+    df = df[df['date'] < '2021-01-01']
     value_counts_list = [df[label].value_counts()[0], df[label].value_counts()[1], df[label].value_counts()[2]]
 
     down_dif = max(value_counts_list) - value_counts_list[0]
