@@ -57,7 +57,7 @@ def data_generator(codes):
     rsi_42_df = pd.read_csv('./data/indicator_data/rsi_42.csv')
 
 
-    with open('trend_params.json') as jsonfile:
+    with open('trend_params_300.json') as jsonfile:
         code_para_map = json.load(jsonfile)
 
     for i, code in enumerate(tqdm(codes)):
@@ -91,18 +91,20 @@ def data_generator(codes):
 
         series.append(triple_barrier(close_serie, params['10d'][0], params['10d'][1], 11)['triple_barrier_signal'].rename('10d'))
         series.append(triple_barrier(close_serie, params['20d'][0], params['20d'][1], 21)['triple_barrier_signal'].rename('20d'))
+        series.append(triple_barrier(close_serie, params['30d'][0], params['30d'][1], 31)['triple_barrier_signal'].rename('30d'))
+        series.append(triple_barrier(close_serie, params['40d'][0], params['40d'][1], 41)['triple_barrier_signal'].rename('40d'))
         series.append(triple_barrier(close_serie, params['60d'][0], params['60d'][1], 61)['triple_barrier_signal'].rename('60d'))
         series.append(triple_barrier(close_serie, params['120d'][0], params['120d'][1], 121)['triple_barrier_signal'].rename('120d'))
         df = pd.concat(series, axis=1)
 
-        # df = df.dropna()  
+ 
 
 
-        df.to_csv(f'./data/training_data/raw_data_{i+1}.csv')
+        df.to_csv(f'./data/training_data_300/raw_data_{i+1}.csv')
 
 
 if __name__ == '__main__':
-    with open('codes.txt', 'r') as f:
+    with open('codes_300.txt', 'r') as f:
         codes = f.read().split()
 
     data_generator(codes)
