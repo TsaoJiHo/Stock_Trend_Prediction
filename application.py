@@ -5,7 +5,6 @@ from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
 import numpy as np
 import pandas as pd
-import csv
 import json
 import finlab
 from finlab import data
