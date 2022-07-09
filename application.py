@@ -234,8 +234,8 @@ def main():
     with open('codes_300.txt', 'r') as f:
         codes = f.read().split()
 
-    with open('stocks_300.txt', 'r') as f:
-        stocks = f.read().encode('utf-8').decode('utf-8', errors='replace').split()
+    with open('stocks_300.txt', 'r', encoding="big5", errors='ignore') as f:
+        stocks = f.read().split()
 
     with open('trend_params_300.json') as jsonfile:
         code_para_map = json.load(jsonfile)
