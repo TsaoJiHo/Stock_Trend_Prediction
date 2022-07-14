@@ -3,3 +3,7 @@ torch
 numpy
 pandas
 finlab
+tqdm
+sklearn
+pathlib
+matplotlib
