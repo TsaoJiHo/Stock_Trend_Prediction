@@ -17,8 +17,6 @@ import subprocess
 with open('config.json') as config_file:
     config = json.load(config_file)
 
-
-
 if not config['LOCAL_MODE']:
     # check if the library folder already exists, to avoid building everytime you load the pahe
     if not os.path.isdir("/tmp/ta-lib"):
@@ -216,18 +214,21 @@ def features_df(newest_date):
 
 def main():
 
-
     date_series = data.indicator('ROC').tail(SAMPLE_COUNT).index.date
 
     current_date = st.selectbox(
      'Select Date',
      date_series,
      index = SAMPLE_COUNT - 1)
-    
-    st.subheader(f'Current Date Selection: {current_date}')
+
     st.write('\n')
-    st.write('● Predicted Fluctuation Rate is considered as the stop-loss/take-profit rate.')
-    st.write('● Softmax Value indicates the output of the deep model which takes technical indicators as input.')
+    st.write('● `Predicted Fluctuation Rate` is considered as the stop-loss/take-profit rate.')
+    st.write('● `Softmax Value` indicates the output of the deep model which takes technical indicators as input.')
+    st.write('● Technical indicators used :', 
+             '`SMA(20)` `SMA(60)` `EMA(20)` `EMA(60)` `ATR(14)` `ATR(42)` `ADX(14)` `ADX(42)` `CCI(14)` `CCI(42)` `W%R(14)`',
+             '`W%R(42)` `RSI(14)` `RSI(42)` `ROC(10)` `ROC(30)` `K(9)` `K(27)` `D(9)` `D(27)` `DIF-MACD(12, 26)` `MACD(9)`')
+    st.write('● Models may take few seconds to show results.')
+    st.subheader(f'Current Date Selection: {current_date}')
 
     device = 'cpu'
 
@@ -247,7 +248,6 @@ def main():
     predicted_value = {10: [[] for _ in range(SAMPLE_COUNT)], 20: [[] for _ in range(SAMPLE_COUNT)],
                     30: [[] for _ in range(SAMPLE_COUNT)], 40: [[] for _ in range(SAMPLE_COUNT)],
                     60: [[] for _ in range(SAMPLE_COUNT)], 120:[[] for _ in range(SAMPLE_COUNT)]}
-
 
     for i, df in features_df(date_series[-1]):
     # print(f'model {i}')
@@ -281,8 +281,6 @@ def main():
                             
                     days += len(outputs)
 
-
-
     for d in [10, 20, 30, 40, 60, 120]:
 
         st.title(f'{d} days holding period')
@@ -291,7 +289,6 @@ def main():
 
         predicted_value_n = predicted_value[d][date_index]
         predicted_label_n = predicted_label[d][date_index]
-
 
         sorted_value = []
         for i, value in enumerate(predicted_value_n):
