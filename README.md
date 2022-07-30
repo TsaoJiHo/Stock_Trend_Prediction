@@ -20,4 +20,4 @@ Set `{"LOCAL_MODE": true}` in `config.json` and command
 
 `streamlit run application.py`
 
-The application will be like [this](https://tsaojiho-stock-trend-prediction-application-qe9dmo.streamlitapp.com/)
+The application will be like [this](https://tsaojiho-stock-trend-prediction-application-qe9dmo.streamlitapp.com/). (May take some time to run, suggest to run on local side)
